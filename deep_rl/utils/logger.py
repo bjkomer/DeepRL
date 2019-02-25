@@ -25,6 +25,7 @@ def get_logger(tag=None, skip=False, level=logging.INFO):
 class Logger(object):
     def __init__(self, vanilla_logger, log_dir, skip=False):
         if not skip:
+            self.log_dir = log_dir
             self.writer = SummaryWriter(log_dir)
         if vanilla_logger is not None:
             self.info = vanilla_logger.info

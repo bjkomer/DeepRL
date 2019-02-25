@@ -308,8 +308,11 @@ def option_ciritc_pixel_atari(name):
 def ppo_cart_pole():
     game = 'CartPole-v0'
     config = Config()
+    config.max_steps = 1e6
+    config.logger = get_logger(ppo_cart_pole.__name__)
     config.num_workers = 5
-    config.task_fn = lambda: Task(game, num_envs=config.num_workers)
+    # config.task_fn = lambda: Task(game, num_envs=config.num_workers)
+    config.task_fn = lambda: Task(game, log_dir=config.logger.log_dir, num_envs=config.num_workers)
     config.eval_env = Task(game)
     config.optimizer_fn = lambda params: torch.optim.RMSprop(params, 0.001)
     config.network_fn = lambda: CategoricalActorCriticNet(config.state_dim, config.action_dim, FCBody(config.state_dim))
@@ -323,7 +326,7 @@ def ppo_cart_pole():
     config.mini_batch_size = 32 * 5
     config.ppo_ratio_clip = 0.2
     config.log_interval = 128 * 5 * 10
-    config.logger = get_logger(ppo_cart_pole.__name__)
+
     run_steps(PPOAgent(config))
 
 def ppo_pixel_atari(name):
@@ -401,6 +404,7 @@ def ddpg_continuous(name):
     config.logger = get_logger()
     run_steps(DDPGAgent(config))
 
+
 def plot():
     import matplotlib.pyplot as plt
     plotter = Plotter()
@@ -433,6 +437,7 @@ def plot():
     plt.legend()
     plt.savefig('./images/breakout.png')
 
+
 if __name__ == '__main__':
     mkdir('log')
     mkdir('tf_log')
@@ -448,7 +453,7 @@ if __name__ == '__main__':
     # a2c_continuous('HalfCheetah-v2')
     # n_step_dqn_cart_pole()
     # option_critic_cart_pole()
-    # ppo_cart_pole()
+    ppo_cart_pole()
     # ppo_continuous('HalfCheetah-v2')
     # ddpg_continuous('HalfCheetah-v2')
 
