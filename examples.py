@@ -6,6 +6,8 @@
 
 from deep_rl import *
 
+from gridworlds import registration
+
 # DQN
 def dqn_cart_pole():
     game = 'CartPole-v0'
@@ -305,8 +307,7 @@ def option_ciritc_pixel_atari(name):
     run_steps(OptionCriticAgent(config))
 
 # PPO
-def ppo_cart_pole():
-    game = 'CartPole-v0'
+def ppo_cart_pole(game='CartPole-v0'):
     config = Config()
     config.max_steps = 1e6
     config.logger = get_logger(ppo_cart_pole.__name__)
@@ -353,7 +354,7 @@ def ppo_pixel_atari(name):
     config.logger = get_logger(tag=ppo_pixel_atari.__name__)
     run_steps(PPOAgent(config))
 
-def ppo_continuous(name):
+def ppo_continuous(name, max_steps=1e6):
     config = Config()
     log_dir = get_default_log_dir(ppo_continuous.__name__)
     config.task_fn = lambda: Task(name)
@@ -372,7 +373,7 @@ def ppo_continuous(name):
     config.mini_batch_size = 64
     config.ppo_ratio_clip = 0.2
     config.log_interval = 2048
-    config.max_steps = 1e6
+    config.max_steps = max_steps
     config.state_normalizer = MeanStdNormalizer()
     config.logger = get_logger()
     run_steps(PPOAgent(config))
@@ -453,12 +454,14 @@ if __name__ == '__main__':
     # a2c_continuous('HalfCheetah-v2')
     # n_step_dqn_cart_pole()
     # option_critic_cart_pole()
-    ppo_cart_pole()
+    # ppo_cart_pole()
+    # ppo_cart_pole('GW-CSP-Simple-Small-v0')
     # ppo_continuous('HalfCheetah-v2')
+    # ppo_continuous('GW-CSP-Simple-Small-v0', max_steps=1e5)
     # ddpg_continuous('HalfCheetah-v2')
 
-    # game = 'BreakoutNoFrameskip-v4'
-    # dqn_pixel_atari(game)
+    game = 'BreakoutNoFrameskip-v4'
+    dqn_pixel_atari(game)
     # quantile_regression_dqn_pixel_atari(game)
     # categorical_dqn_pixel_atari(game)
     # a2c_pixel_atari(game)

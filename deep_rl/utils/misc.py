@@ -32,6 +32,13 @@ def run_steps(agent):
                 agent.total_steps, np.mean(rewards), np.median(rewards), np.min(rewards), np.max(rewards),
                 config.log_interval / (time.time() - t0)))
             t0 = time.time()
+
+            # Tensorboard logging
+            if hasattr(config.logger, 'log_dir'):
+                config.logger.add_scalar(tag='mean', value=np.mean(rewards), step=agent.total_steps)
+                config.logger.add_scalar(tag='median', value=np.median(rewards), step=agent.total_steps)
+                config.logger.add_scalar(tag='min', value=np.min(rewards), step=agent.total_steps)
+                config.logger.add_scalar(tag='max', value=np.max(rewards), step=agent.total_steps)
         if config.eval_interval and not agent.total_steps % config.eval_interval:
             agent.eval_episodes()
         if config.max_steps and agent.total_steps >= config.max_steps:
